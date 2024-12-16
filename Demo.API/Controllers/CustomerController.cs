@@ -23,12 +23,34 @@ namespace Demo.API.Controllers
 
 
 
-        [HttpPost("save")]
-        public IActionResult SaveComment(string comment)
+        private readonly string _connectionString = "Server=localhost;Database=DemoDb;Trusted_Connection=True;";
+
+        [HttpGet("search")]
+        public IActionResult Search(string searchTerm)
         {
-            // Code vulnérable : Sauvegarde la donnée sans validation
-            System.IO.File.WriteAllText("comments.txt", comment);
-            return Ok("Comment saved!");
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sql = $"SELECT * FROM Users WHERE Username LIKE '%{searchTerm}%'";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        var reader = command.ExecuteReader();
+                        var results = new List<string>();
+                        while (reader.Read())
+                        {
+                            results.Add(reader["Username"].ToString());
+                        }
+                        return Ok(results);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+    
     }
 }
