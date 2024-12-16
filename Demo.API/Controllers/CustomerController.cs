@@ -20,5 +20,12 @@ namespace Demo.API.Controllers
             var customer = _service.GetCustomer(id);
             return customer;
         }
+
+
+        public string bug(){
+            int bug = "bug";
+            return bug;
+        }
+
     }
 }
