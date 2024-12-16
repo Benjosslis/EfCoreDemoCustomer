@@ -22,10 +22,13 @@ namespace Demo.API.Controllers
         }
 
 
-        public string bug(){
-            int bug = "bug";
-            return bug;
-        }
 
+        [HttpPost("save")]
+        public IActionResult SaveComment(string comment)
+        {
+            // Code vulnérable : Sauvegarde la donnée sans validation
+            System.IO.File.WriteAllText("comments.txt", comment);
+            return Ok("Comment saved!");
+        }
     }
 }
